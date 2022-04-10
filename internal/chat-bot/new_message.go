@@ -32,7 +32,7 @@ func (s ServiceImpl) NewMessage(ctx context.Context, obj events.MessageNewObject
 		messageBuilder := params.NewMessagesSendBuilder()
 		messageBuilder.RandomID(rand.Int())
 		messageBuilder.PeerID(obj.Message.PeerID)
-		messageBuilder.Message("Дороу бандит! Остальной функционал пока не завезли, а пока можешь онуть с мемема и лайкнуть его - https://vk.com/photo-197700721_457240802")
+		messageBuilder.Message("Дороу бандит! Остальной функционал пока не завезли, а пока можешь орнуть с мемеса и лайкнуть его - https://vk.com/photo-197700721_457240802")
 
 		// TODO: Проверить, не будет ли админ сам себе получать ответ на "Привет"
 
