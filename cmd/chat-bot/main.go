@@ -37,7 +37,7 @@ func main() {
 	// Подключаемся к API VK
 	vk := api.NewVK(cfg.ApiVK.ApiKey)
 	vkCallback := callback.NewCallback()
-	vkCallback.ConfirmationKey = "bc90fc38"
+	vkCallback.ConfirmationKey = cfg.ApiVK.ConfirmationKey
 	vkCallback.Title = "Bot"
 
 	conn := vkConn.NewConnection(vk)
