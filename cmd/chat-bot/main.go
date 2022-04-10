@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/SevereCloud/vksdk/v2/api"
+	"github.com/SevereCloud/vksdk/v2/callback"
 	"github.com/gorilla/mux"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -10,7 +12,7 @@ import (
 	"vk-chat-bot/config"
 	chatbotController "vk-chat-bot/endpoints/chat-bot"
 	chatbotService "vk-chat-bot/internal/chat-bot"
-	"vk-chat-bot/internal/connection/vk"
+	vkConn "vk-chat-bot/internal/connection/vk"
 	myslqRepo "vk-chat-bot/internal/repository/my-slq"
 )
 
@@ -35,19 +37,30 @@ func main() {
 	repo := myslqRepo.NewRepository(db)
 
 	// Подключаемся к API VK
-	conn := vk.NewConnection()
+	vk := api.NewVK(cfg.ApiVK.ApiKey)
+	vkCallback := callback.NewCallback()
+	vkCallback.Title = "Bot"
+
+	conn := vkConn.NewConnection(vk)
 
 	// Создаем сервис чат-бота
 	chatBotService := chatbotService.NewService(conn, repo)
 
 	// Создаем контроллер
-	controller := chatbotController.NewController(chatBotService)
+	controller := chatbotController.NewController(vkCallback, chatBotService)
+	controller.Run()
 
 	// Создаем роутер
 	router := mux.NewRouter()
 
-	// Добавляем каждому роуто обработку из контроллера
-	router.HandleFunc("/api/health", controller.HandleVKCallback)
+	// Добавляем роут на обработку callback
+	router.HandleFunc("/callback", vkCallback.HandleFunc)
+
+	go func() {
+		if err := vkCallback.AutoSetting(vk, cfg.ApiVK.CallbackUrl); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	srv := &http.Server{
 		Handler:      router,

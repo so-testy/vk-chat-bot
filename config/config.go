@@ -31,7 +31,8 @@ func (d DatabaseConfig) GetDSN() string {
 }
 
 type VKConfig struct {
-	ApiKey string
+	CallbackUrl string
+	ApiKey      string
 }
 
 // GetConfig - функция получения конфигурационных настроек
@@ -41,15 +42,16 @@ func GetConfig() Config {
 	cfg.ApiVK = &VKConfig{}
 
 	flag.StringVar(&cfg.HttpAddr, "HTTP_ADDR", ":8080", "")
-	flag.StringVar(&cfg.ApiKey, "API_KEY", "", "")
+	flag.StringVar(&cfg.ApiKey, "API_KEY", "0abdbfa7-b7f0-4673-b9bb-ab826fdd4d1f", "")
 
-	flag.StringVar(&cfg.ApiVK.ApiKey, "VK_API_KEY", "", "")
+	flag.StringVar(&cfg.ApiVK.CallbackUrl, "CALLBACK_URL", "", "")
+	flag.StringVar(&cfg.ApiVK.ApiKey, "VK_API_KEY", "445c6e92d5370fc4c486f11f8d3b088c96fa795314f1b5432dcce5c63da1cf42afb4ad100a1b2b7047578", "")
 
-	flag.StringVar(&cfg.DB.Host, "DB_HOST", "", "")
-	flag.StringVar(&cfg.DB.Port, "DB_PORT", "", "")
-	flag.StringVar(&cfg.DB.Name, "DB_NAME", "", "")
-	flag.StringVar(&cfg.DB.User, "DB_USER", "", "")
-	flag.StringVar(&cfg.DB.Pass, "DB_PASS", "", "")
+	flag.StringVar(&cfg.DB.Host, "DB_HOST", "localhost", "")
+	flag.StringVar(&cfg.DB.Port, "DB_PORT", "10000", "")
+	flag.StringVar(&cfg.DB.Name, "DB_NAME", "chat_bot", "")
+	flag.StringVar(&cfg.DB.User, "DB_USER", "user", "")
+	flag.StringVar(&cfg.DB.Pass, "DB_PASS", "user", "")
 
 	flag.Parse()
 

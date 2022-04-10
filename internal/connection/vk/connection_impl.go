@@ -1,11 +1,15 @@
 package vk
 
-import "vk-chat-bot/internal/connection"
+import (
+	"github.com/SevereCloud/vksdk/v2/api"
+	"vk-chat-bot/internal/connection"
+)
 
 type ConnectionImpl struct {
+	vk *api.VK
 }
 
 // NewConnection - функция создания новго соединения с API VK
-func NewConnection() connection.Connection {
-	return &ConnectionImpl{}
+func NewConnection(vk *api.VK) connection.Connection {
+	return &ConnectionImpl{vk: vk}
 }
