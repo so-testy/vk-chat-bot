@@ -41,7 +41,7 @@ func GetConfig() Config {
 	cfg.DB = &DatabaseConfig{}
 	cfg.ApiVK = &VKConfig{}
 
-	flag.StringVar(&cfg.HttpAddr, "HTTP_ADDR", ":80", "")
+	flag.StringVar(&cfg.HttpAddr, "HTTP_ADDR", "194.58.120.99:8080", "")
 	flag.StringVar(&cfg.ApiKey, "API_KEY", "0abdbfa7-b7f0-4673-b9bb-ab826fdd4d1f", "")
 
 	flag.StringVar(&cfg.ApiVK.CallbackUrl, "CALLBACK_URL", "http://194.58.120.99/callback", "")

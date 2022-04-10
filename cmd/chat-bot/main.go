@@ -55,11 +55,11 @@ func main() {
 	// Добавляем роут на обработку callback
 	router.HandleFunc("/callback", vkCallback.HandleFunc)
 
-	go func() {
-		if err := vkCallback.AutoSetting(vk, cfg.ApiVK.CallbackUrl); err != nil {
-			log.Fatal(err)
-		}
-	}()
+	//go func() {
+	//	if err := vkCallback.AutoSetting(vk, cfg.ApiVK.CallbackUrl); err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}()
 
 	srv := &http.Server{
 		Handler:      router,
