@@ -1,11 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/SevereCloud/vksdk/v2/api"
 	"github.com/SevereCloud/vksdk/v2/callback"
 	"github.com/gorilla/mux"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"time"
@@ -13,28 +12,27 @@ import (
 	chatbotController "vk-chat-bot/endpoints/chat-bot"
 	chatbotService "vk-chat-bot/internal/chat-bot"
 	vkConn "vk-chat-bot/internal/connection/vk"
-	myslqRepo "vk-chat-bot/internal/repository/my-slq"
 )
 
 func main() {
 	// Получаем конфиг настройки
 	cfg := config.GetConfig()
 
-	// Подключаемся к БД
-	db, err := gorm.Open(mysql.New(mysql.Config{
-		DSN:                       cfg.DB.GetDSN(),
-		DefaultStringSize:         255,
-		DisableDatetimePrecision:  true,
-		DontSupportRenameIndex:    false,
-		DontSupportRenameColumn:   true,
-		DontSupportForShareClause: true,
-	}))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Инициализируем репозиторий
-	repo := myslqRepo.NewRepository(db)
+	//// Подключаемся к БД
+	//db, err := gorm.Open(mysql.New(mysql.Config{
+	//	DSN:                       cfg.DB.GetDSN(),
+	//	DefaultStringSize:         255,
+	//	DisableDatetimePrecision:  true,
+	//	DontSupportRenameIndex:    false,
+	//	DontSupportRenameColumn:   true,
+	//	DontSupportForShareClause: true,
+	//}))
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//// Инициализируем репозиторий
+	//repo := myslqRepo.NewRepository(db)
 
 	// Подключаемся к API VK
 	vk := api.NewVK(cfg.ApiVK.ApiKey)
@@ -44,7 +42,7 @@ func main() {
 	conn := vkConn.NewConnection(vk)
 
 	// Создаем сервис чат-бота
-	chatBotService := chatbotService.NewService(conn, repo)
+	chatBotService := chatbotService.NewService(conn, nil)
 
 	// Создаем контроллер
 	controller := chatbotController.NewController(vkCallback, chatBotService)
@@ -56,11 +54,11 @@ func main() {
 	// Добавляем роут на обработку callback
 	router.HandleFunc("/callback", vkCallback.HandleFunc)
 
-	go func() {
-		if err := vkCallback.AutoSetting(vk, cfg.ApiVK.CallbackUrl); err != nil {
-			log.Fatal(err)
-		}
-	}()
+	//go func() {
+	//	if err := vkCallback.AutoSetting(vk, cfg.ApiVK.CallbackUrl); err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}()
 
 	srv := &http.Server{
 		Handler:      router,
@@ -69,5 +67,6 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
+	fmt.Println("server start: ", srv.Addr)
 	log.Fatal(srv.ListenAndServe())
 }
